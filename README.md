@@ -1,2 +1,2 @@
 # manticore-mysql-php
-Docker compose for MySQL, Manticore and PHP Webserver
+Basic docker containers for PHP, Manticore and MySQL

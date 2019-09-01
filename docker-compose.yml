@@ -1,0 +1,48 @@
+version: '3'
+services:
+  mysql:
+    build: ./mysql
+    volumes:
+      - ./mysql/data/mysql:/var/lib/mysql
+      - ./mysql/confs/dev/mysql:/etc/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: somepass123
+      MYSQL_DATABASE: examples
+      MYSQL_USER: test
+      MYSQL_PASSWORD: test123
+    networks: 
+      - core
+      - site
+    ports:
+      - 3306:3306
+  manticore:
+    build: ./manticore
+    volumes:
+      - ./manticore/etc/:/etc/sphinxseach
+      - ./manticore/data/:/var/lib/manticore/data
+      - ./manticore/logs/:/var/log/manticore
+    environment:
+      MANTICORE_VERSION: 3.1.2
+    networks: 
+      - core
+      - site
+    ports:
+      - 9306:9306
+    depends_on:
+      - mysql
+  site:
+    build: ./php
+    volumes: 
+      - ./php/public_html:/public_html
+    ports: 
+      - 5000:80
+    depends_on:
+      - manticore
+    networks: 
+      - core
+      - site
+networks:
+  core:
+    driver: bridge
+  site:
+    driver: bridge
